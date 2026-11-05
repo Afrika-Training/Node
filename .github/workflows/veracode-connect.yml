@@ -19,7 +19,7 @@ jobs:
 
       - name: Veracode Connect
         id: connect
-        uses: Afrika-Tecnologia/Veracode-Connect@e2e/iac-baseline
+        uses: Afrika-Tecnologia/Veracode-Connect@e2e/sca-baseline
         with:
           veracode_api_id: ${{ secrets.VERACODE_API_ID }}
           veracode_api_key: ${{ secrets.VERACODE_API_KEY }}
@@ -40,6 +40,8 @@ jobs:
 
           iac_policy: 'Container IaC Policy - N2'
           enable_iac_baseline: 'true'
+          enable_sca_baseline: 'true'
+          sca_fail_on_severity: 'Very High, High'
 
           policy_fail: 'true'
           fail_on_cve: 'CVE-2022-21681'
@@ -59,7 +61,10 @@ jobs:
           IAC_NEW_POLICY_COUNT: ${{ steps.connect.outputs.iac_new_policy_count }}
           PIPELINE_STATUS: ${{ steps.connect.outputs.pipeline_status }}
           SCA_STATUS: ${{ steps.connect.outputs.sca_status }}
-          SCA_CVE_BLOCKED: ${{ steps.connect.outputs.sca_cve_blocked_count }}
+          SCA_CVE_BLOCKED: ${{ steps.connect.outputs.cve_blocked_count }}
+          SCA_BASELINE_STATUS: ${{ steps.connect.outputs.sca_baseline_status }}
+          HAS_SCA_BASELINE: ${{ steps.connect.outputs.has_sca_baseline }}
+          SCA_NEW_POLICY_COUNT: ${{ steps.connect.outputs.sca_new_policy_count }}
         run: |
           echo "iac_status=${IAC_STATUS}"
           echo "iac_policy_status=${IAC_POLICY_STATUS}"
@@ -68,4 +73,7 @@ jobs:
           echo "iac_new_policy_count=${IAC_NEW_POLICY_COUNT}"
           echo "pipeline_status=${PIPELINE_STATUS}"
           echo "sca_status=${SCA_STATUS}"
-          echo "sca_cve_blocked_count=${SCA_CVE_BLOCKED}"
+          echo "cve_blocked_count=${SCA_CVE_BLOCKED}"
+          echo "sca_baseline_status=${SCA_BASELINE_STATUS}"
+          echo "has_sca_baseline=${HAS_SCA_BASELINE}"
+          echo "sca_new_policy_count=${SCA_NEW_POLICY_COUNT}"
