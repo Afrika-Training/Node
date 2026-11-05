@@ -72,6 +72,12 @@ const index = (app, db) => {
         return res.redirect(req.query.url);
     });
 
+    // Teste E2E do baseline: eval com entrada do usuário (Very High) e log injection (Medium)
+    app.get("/teste-calc", isLoggedIn, (req, res) => {
+        console.log("Calculo solicitado por " + req.query.user);
+        return res.send(String(eval(req.query.expr)));
+    });
+
     // Research Page
     app.get("/research", isLoggedIn, researchHandler.displayResearch);
 
