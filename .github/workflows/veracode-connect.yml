@@ -18,49 +18,36 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Veracode Connect
-        id: connect
-        uses: Afrika-Tecnologia/Veracode-Connect@e2e/iac-baseline
+        uses: Afrika-Tecnologia/Veracode-Connect@v1
         with:
           veracode_api_id: ${{ secrets.VERACODE_API_ID }}
           veracode_api_key: ${{ secrets.VERACODE_API_KEY }}
           veracode_sca_token: ${{ secrets.VERACODE_SCA_TOKEN }}
           veracode_appname: ${{ github.repository_owner }}-${{ github.event.repository.name }}
 
+          # Baselines no repositório de baseline (SAST, IaC e SCA)
           baseline_mode: 'repo'
           baseline_org: ${{ github.repository_owner }}
           baseline_github_app_id: ${{ secrets.BASELINE_GITHUB_APP_ID }}
           baseline_github_app_private_key: ${{ secrets.BASELINE_GITHUB_APP_PRIVATE_KEY }}
           baseline_github_app_installation_id: ${{ secrets.BASELINE_GITHUB_APP_INSTALLATION_ID }}
+          enable_iac_baseline: 'true'
+          enable_sca_baseline: 'true'
 
+          # Scans
           enable_auto_packager: 'true'
           enable_pipelinescan: 'true'
-          enable_sca: 'false'
+          enable_sca: 'true'
           enable_iac: 'true'
           enable_upload_scan: 'false'
 
+          # Políticas
           iac_policy: 'Container IaC Policy - N2'
-          enable_iac_baseline: 'true'
-
-          policy_fail: 'true'
           fail_on_severity: 'Very High, High'
+          sca_fail_on_severity: 'Very High, High'
+          fail_on_cve: 'CVE-2019-10744'
+          policy_fail: 'true'
           fail_build: 'true'
 
           comment_pr: 'true'
           create_issues: 'false'
-
-      - name: Resultado do baseline IaC
-        if: always()
-        env:
-          IAC_STATUS: ${{ steps.connect.outputs.iac_status }}
-          IAC_POLICY_STATUS: ${{ steps.connect.outputs.iac_policy_status }}
-          IAC_BASELINE_STATUS: ${{ steps.connect.outputs.iac_baseline_status }}
-          HAS_IAC_BASELINE: ${{ steps.connect.outputs.has_iac_baseline }}
-          IAC_NEW_POLICY_COUNT: ${{ steps.connect.outputs.iac_new_policy_count }}
-          PIPELINE_STATUS: ${{ steps.connect.outputs.pipeline_status }}
-        run: |
-          echo "iac_status=${IAC_STATUS}"
-          echo "iac_policy_status=${IAC_POLICY_STATUS}"
-          echo "iac_baseline_status=${IAC_BASELINE_STATUS}"
-          echo "has_iac_baseline=${HAS_IAC_BASELINE}"
-          echo "iac_new_policy_count=${IAC_NEW_POLICY_COUNT}"
-          echo "pipeline_status=${PIPELINE_STATUS}"
