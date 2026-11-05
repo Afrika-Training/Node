@@ -44,7 +44,7 @@ jobs:
           sca_fail_on_severity: 'Very High, High'
 
           policy_fail: 'true'
-          fail_on_cve: 'CVE-2022-21681'
+          fail_on_cve: 'CVE-2019-10744'
           fail_on_severity: 'Very High, High'
           fail_build: 'true'
 
