@@ -34,7 +34,7 @@ jobs:
 
           enable_auto_packager: 'true'
           enable_pipelinescan: 'true'
-          enable_sca: 'false'
+          enable_sca: 'true'
           enable_iac: 'true'
           enable_upload_scan: 'false'
 
@@ -42,6 +42,7 @@ jobs:
           enable_iac_baseline: 'true'
 
           policy_fail: 'true'
+          fail_on_cve: 'CVE-2022-21681'
           fail_on_severity: 'Very High, High'
           fail_build: 'true'
 
@@ -57,6 +58,8 @@ jobs:
           HAS_IAC_BASELINE: ${{ steps.connect.outputs.has_iac_baseline }}
           IAC_NEW_POLICY_COUNT: ${{ steps.connect.outputs.iac_new_policy_count }}
           PIPELINE_STATUS: ${{ steps.connect.outputs.pipeline_status }}
+          SCA_STATUS: ${{ steps.connect.outputs.sca_status }}
+          SCA_CVE_BLOCKED: ${{ steps.connect.outputs.sca_cve_blocked_count }}
         run: |
           echo "iac_status=${IAC_STATUS}"
           echo "iac_policy_status=${IAC_POLICY_STATUS}"
@@ -64,3 +67,5 @@ jobs:
           echo "has_iac_baseline=${HAS_IAC_BASELINE}"
           echo "iac_new_policy_count=${IAC_NEW_POLICY_COUNT}"
           echo "pipeline_status=${PIPELINE_STATUS}"
+          echo "sca_status=${SCA_STATUS}"
+          echo "sca_cve_blocked_count=${SCA_CVE_BLOCKED}"
